@@ -51,7 +51,7 @@ function createTrailCard(trail, topicsCount) {
         <span>Nível inicial: Iniciante</span>
         <span>${topicsCount} tópicos</span>
       </div>
-      <a class="button button-secondary" href="/trilha.html?id=${trail.id}">Ver trilha</a>
+      <a class="button button-secondary" href="trilha.html?id=${trail.id}">Ver trilha</a>
     </div>
   `;
   return card;
