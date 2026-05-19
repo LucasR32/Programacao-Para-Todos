@@ -1,0 +1,59 @@
+{
+  "pontos": [
+    {
+      "id": "biblioteca-municipal-vila-leopoldina",
+      "nome": "Biblioteca Municipal Vila Leopoldina",
+      "endereco": "R. Carlos Weber, 500 - Vila Leopoldina, São Paulo",
+      "tipo": "biblioteca",
+      "lat": -23.5292,
+      "lng": -46.7353,
+      "horario": "Seg-Sex 09:00-18:00",
+      "gratuito": true,
+      "verificado_em": "2026-05-01"
+    },
+    {
+      "id": "praça-quintino-bocaiúva",
+      "nome": "Praça Quintino Bocaiúva",
+      "endereco": "Praça Quintino Bocaiúva, Lapa, São Paulo",
+      "tipo": "praca",
+      "lat": -23.5365,
+      "lng": -46.7348,
+      "horario": "Aberto 24h",
+      "gratuito": true,
+      "verificado_em": "2026-05-01"
+    },
+    {
+      "id": "escola-estado-tito-prates",
+      "nome": "Escola Estadual Tito Prates da Fonseca",
+      "endereco": "R. Guaraciaba, 1040 - Vila Leopoldina, São Paulo",
+      "tipo": "escola",
+      "lat": -23.5308,
+      "lng": -46.7242,
+      "horario": "Seg-Sex 07:00-17:00",
+      "gratuito": true,
+      "verificado_em": "2026-05-01"
+    },
+    {
+      "id": "telecentro-comunitario-lapa",
+      "nome": "Telecentro Comunitário da Lapa",
+      "endereco": "Av. Eliseu de Almeida, 4550 - Lapa, São Paulo",
+      "tipo": "telecentro",
+      "lat": -23.5319,
+      "lng": -46.7437,
+      "horario": "Seg-Sex 08:00-19:00",
+      "gratuito": true,
+      "verificado_em": "2026-05-01"
+    },
+    {
+      "id": "centro-cultural-maria-de-azevedo",
+      "nome": "Centro Cultural Maria de Azevedo",
+      "endereco": "R. Carlos Weber, 800 - Vila Leopoldina, São Paulo",
+      "tipo": "outro",
+      "lat": -23.5275,
+      "lng": -46.7391,
+      "horario": "Seg-Sex 10:00-18:00",
+      "gratuito": true,
+      "verificado_em": "2026-05-01"
+    }
+  ]
+}
