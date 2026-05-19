@@ -1,0 +1,13 @@
+{
+  "name": "ppt",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node ./api/index.js",
+    "build": "echo \"Build process not configured for MVP\"",
+    "start": "node ./api/index.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

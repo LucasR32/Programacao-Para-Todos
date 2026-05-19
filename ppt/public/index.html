@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Programa de trilhas de programação gratuito para jovens de escolas públicas." />
+  <meta property="og:title" content="PPT | Programação Para Todos" />
+  <meta property="og:description" content="Trilhas de aprendizado em frontend, backend e banco de dados, com conteúdo gratuito e acesso comunitário." />
+  <meta name="google-maps-api-key" content="COLOQUE_SUA_CHAVE_AQUI" />
+  <title>PPT | Programação Para Todos</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/index.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">Programação Para Todos</a>
+      <nav aria-label="Navegação principal" class="main-nav">
+        <a href="/trilha.html?id=frontend">Trilhas</a>
+        <a href="/wifi-map.html">Mapa Wi-Fi</a>
+        <a href="#sobre">Sobre</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-content">
+        <div>
+          <p class="eyebrow">Educação digital gratuita</p>
+          <h1>Trilhas de programação para jovens de escolas públicas.</h1>
+          <p class="hero-text">Aprenda frontend, backend e banco de dados com recursos gratuitos, em parceria com a Escola Estadual Tito Prates e o programa Conectados pela Comunidade do SENAI.</p>
+          <a class="button button-primary" href="#trilhas">Começar agora</a>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="hero-card">HTML</div>
+          <div class="hero-card hero-card-large">JS</div>
+          <div class="hero-card hero-card-small">API</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="trilhas" class="section-trails">
+      <div class="container">
+        <div class="section-header">
+          <p class="eyebrow">Trilhas disponíveis</p>
+          <h2>Escolha sua jornada de aprendizado</h2>
+        </div>
+        <div id="trails-grid" class="trails-grid" aria-live="polite"></div>
+        <div id="trails-error" class="fetch-error" hidden></div>
+      </div>
+    </section>
+
+    <section id="sobre" class="section-about">
+      <div class="container">
+        <div class="section-header">
+          <p class="eyebrow">Sobre o projeto</p>
+          <h2>Programação Para Todos é um projeto comunitário</h2>
+        </div>
+        <p>O PPT oferece trilhas de programação gratuitas para estudantes da Escola Estadual Tito Prates da Fonseca e da comunidade local, em parceria com o programa Conectados pela Comunidade do SENAI. Nosso objetivo é levar habilidades digitais e acesso a conteúdo técnico de qualidade para quem está começando.</p>
+      </div>
+    </section>
+
+    <section class="section-map">
+      <div class="container">
+        <div class="section-header">
+          <p class="eyebrow">Mapa de Wi-Fi</p>
+          <h2>Pontos de acesso gratuitos próximos</h2>
+        </div>
+        <div class="map-frame" id="map-embed" aria-label="Mapa de pontos de Wi-Fi gratuito"></div>
+        <p class="map-link"><a href="/wifi-map.html">Ver página dedicada do mapa</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>Grupo PPT • SENAI Campus Mariano Ferraz • 2026 • Conteúdo gratuito</p>
+      <p><a href="https://github.com">GitHub</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="/js/index.js"></script>
+</body>
+</html>
