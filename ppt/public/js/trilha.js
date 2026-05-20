@@ -33,7 +33,7 @@ function getTrailId() {
 }
 
 function redirectHome() {
-  window.location.href = '/';
+  window.location.href = 'index.html';
 }
 
 function showLoading() {
@@ -59,7 +59,7 @@ function buildDataMap(nodes) {
 }
 
 function loadTrailData(trailId) {
-  return fetch(`/data/trilha-${trailId}.json`, { cache: 'no-store' })
+  return fetch(`data/trilha-${trailId}.json`, { cache: 'no-store' })
     .then((response) => {
       if (!response.ok) {
         throw new Error(`Falha ao carregar dados da trilha (${response.status}).`);

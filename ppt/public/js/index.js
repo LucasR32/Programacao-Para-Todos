@@ -58,7 +58,7 @@ function createTrailCard(trail, topicsCount) {
 }
 
 function fetchTrailTopicsCount(trail) {
-  return fetch(`/data/${trail.arquivo}`, { cache: 'no-store' })
+  return fetch(`data/${trail.arquivo}`, { cache: 'no-store' })
     .then((response) => {
       if (!response.ok) {
         return Promise.resolve('?');
@@ -73,7 +73,7 @@ function loadTrails() {
   renderSkeletons();
   errorMessage.hidden = true;
 
-  fetch('/data/trilhas.json', { cache: 'no-store' })
+  fetch('data/trilhas.json', { cache: 'no-store' })
     .then((response) => {
       if (!response.ok) {
         throw new Error('Não foi possível carregar as trilhas.');

@@ -108,7 +108,7 @@ function renderPoints(points) {
 }
 
 function loadPointsAndRender() {
-  fetch('/data/pontos-wifi.json', { cache: 'no-store' })
+  fetch('data/pontos-wifi.json', { cache: 'no-store' })
     .then((response) => {
       if (!response.ok) {
         throw new Error('Não foi possível carregar os pontos de Wi-Fi.');
