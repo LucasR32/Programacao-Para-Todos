@@ -323,6 +323,8 @@ button:hover {
   .status-badge.locked {
     background: rgba(71, 85, 105, 0.18);
     color: var(--color-muted);
+  }
+
 .btn-secondary,
 .button-secondary {
   background: var(--color-surface);

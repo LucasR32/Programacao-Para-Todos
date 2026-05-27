@@ -26,6 +26,7 @@
       <div>
         <p class="eyebrow">Trilha de aprendizado</p>
         <h1 id="trail-title">Carregando trilha...</h1>
+        <span id="breadcrumb-current" class="trail-breadcrumb">Carregando...</span>
         <p id="trail-description" class="trail-description">Acompanhe o roadmap e avance nos próximos tópicos.</p>
       </div>
       <div class="trail-hero-actions">
@@ -36,10 +37,16 @@
 
     <div class="page-grid">
       <section class="roadmap-wrapper">
+        <div class="trail-tabs" role="tablist" aria-label="Seleção de trilhas">
+          <button type="button" class="trail-tab" data-trail-id="frontend" aria-selected="false">Frontend</button>
+          <button type="button" class="trail-tab" data-trail-id="backend" aria-selected="false">Backend</button>
+          <button type="button" class="trail-tab" data-trail-id="banco-de-dados" aria-selected="false">Banco de Dados</button>
+        </div>
         <div id="roadmap-container" class="roadmap-container" aria-live="polite"></div>
       </section>
 
       <aside class="sidebar" id="legend">
+        <div id="trail-indicator" class="trail-indicator">Carregando trilha...</div>
         <button id="legend-toggle" class="sidebar-toggle" type="button" aria-expanded="true">Legenda</button>
         <div class="sidebar-panel">
           <h2>Legenda do roadmap</h2>

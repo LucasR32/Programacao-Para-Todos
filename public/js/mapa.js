@@ -1,16 +1,10 @@
 const MAP_CONTAINER_ID = 'mapa-container';
 const POINTS_LIST_ID = 'pontos-list';
-const GOOGLE_MAPS_API_KEY_META = 'google-maps-api-key';
 const fallbackCenter = { lat: -23.5325, lng: -46.7310 };
 let map;
-let infoWindow;
 let markers = new Map();
 let activeListItem = null;
-
-function getApiKey() {
-  const meta = document.querySelector(`meta[name="${GOOGLE_MAPS_API_KEY_META}"]`);
-  return meta?.content?.trim() || '';
-}
+let resizeObserver = null;
 
 function sendError(message) {
   const list = document.getElementById(POINTS_LIST_ID);
@@ -33,7 +27,7 @@ function highlightListItem(itemId) {
   }
 }
 
-function createInfoWindowContent(point) {
+function createPopupContent(point) {
   return `
     <div style="max-width:240px; font-family: 'IBM Plex Sans', system-ui, sans-serif;">
       <h3 style="margin:0 0 8px; font-size:1rem;">${point.nome}</h3>
@@ -44,12 +38,10 @@ function createInfoWindowContent(point) {
   `;
 }
 
-function openInfoWindow(pointId) {
+function openMarkerPopup(pointId) {
   const marker = markers.get(pointId);
   if (!marker) return;
-  const point = marker.pointData;
-  infoWindow.setContent(createInfoWindowContent(point));
-  infoWindow.open(map, marker);
+  marker.openPopup();
   highlightListItem(pointId);
 }
 
@@ -63,30 +55,22 @@ function buildSidebarItem(point) {
     <div class="ponto-meta"><span>Tipo: ${point.tipo}</span><span>Horário: ${point.horario}</span></div>
     <a class="btn-route" href="${buildRouteUrl(point.lat, point.lng)}" target="_blank" rel="noopener noreferrer">Como chegar</a>
   `;
-  item.addEventListener('click', () => openInfoWindow(point.id));
+  item.addEventListener('click', () => openMarkerPopup(point.id));
   return item;
 }
 
 function createMarker(point) {
-  const icon = {
-    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
-        <path fill="#2563eb" d="M12 2C8.13 2 5 5.13 5 9c0 4.88 5.14 10.64 6.17 11.77.39.4 1.02.4 1.41 0C13.86 19.64 19 13.88 19 9c0-3.87-3.13-7-7-7zM12 12.5c-1.93 0-3.5-1.57-3.5-3.5S10.07 5.5 12 5.5s3.5 1.57 3.5 3.5S13.93 12.5 12 12.5z"/>
-      </svg>`),
-    scaledSize: new google.maps.Size(36, 36),
-    anchor: new google.maps.Point(18, 36)
-  };
-
-  const marker = new google.maps.Marker({
-    position: { lat: point.lat, lng: point.lng },
-    map,
-    icon,
-    title: point.nome
+  const marker = L.marker([point.lat, point.lng]).addTo(map);
+  marker.bindPopup(createPopupContent(point), {
+    maxWidth: 280,
+    autoClose: false,
+    closeOnClick: false,
+    closeButton: true
   });
-  marker.pointData = point;
-  marker.addListener('click', () => {
-    openInfoWindow(point.id);
+  marker.on('popupopen', () => {
+    highlightListItem(point.id);
   });
+  marker.pointId = point.id;
   return marker;
 }
 
@@ -103,7 +87,7 @@ function renderPoints(points) {
   });
 
   if (points.length > 0) {
-    openInfoWindow(points[0].id);
+    openMarkerPopup(points[0].id);
   }
 }
 
@@ -133,51 +117,48 @@ function getUserLocation() {
       resolve(fallbackCenter);
       return;
     }
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        resolve({ lat: position.coords.latitude, lng: position.coords.longitude });
-      },
-      () => {
-        resolve(fallbackCenter);
-      },
-      { timeout: 4000 }
-    );
+
+    let settled = false;
+    const onSuccess = (position) => {
+      if (settled) return;
+      settled = true;
+      resolve({ lat: position.coords.latitude, lng: position.coords.longitude });
+    };
+    const onFailure = () => {
+      if (settled) return;
+      settled = true;
+      resolve(fallbackCenter);
+    };
+
+    navigator.geolocation.getCurrentPosition(onSuccess, onFailure, { timeout: 4000 });
+    setTimeout(() => onFailure(), 4200);
   });
 }
 
 function initMap(center) {
   const container = document.getElementById(MAP_CONTAINER_ID);
-  map = new google.maps.Map(container, {
-    center,
+  map = L.map(container, {
+    center: [center.lat, center.lng],
     zoom: 14,
-    streetViewControl: false,
-    mapTypeControl: false,
-    fullscreenControl: false
+    zoomControl: true
   });
-  infoWindow = new google.maps.InfoWindow();
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+    maxZoom: 19
+  }).addTo(map);
+
+  if (window.ResizeObserver) {
+    resizeObserver = new ResizeObserver(() => map.invalidateSize());
+    resizeObserver.observe(container);
+  }
+
+  window.addEventListener('resize', () => map.invalidateSize());
   loadPointsAndRender();
 }
 
-function loadGoogleMapsScript(apiKey) {
-  window.initMap = async () => {
-    const center = await getUserLocation();
-    initMap(center);
-  };
-
-  const script = document.createElement('script');
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&callback=initMap`;
-  script.async = true;
-  script.defer = true;
-  document.head.appendChild(script);
-}
-
 function initialize() {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    sendError('Chave da API do Google Maps não configurada.');
-    return;
-  }
-  loadGoogleMapsScript(apiKey);
+  getUserLocation().then(initMap);
 }
 
 initialize();

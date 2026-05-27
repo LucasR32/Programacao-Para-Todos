@@ -26,6 +26,11 @@ const breadcrumbCurrent = document.getElementById('breadcrumb-current');
 const trailIndicator = document.getElementById('trail-indicator');
 const legendToggle = document.getElementById('legend-toggle');
 const legendPanel = document.querySelector('.sidebar-panel');
+const trailTabs = document.querySelectorAll('.trail-tab');
+
+let currentGraph = null;
+let currentModal = null;
+let activeTrailId = '';
 
 function getTrailId() {
   const params = new URLSearchParams(window.location.search);
@@ -48,10 +53,63 @@ function updatePageMeta(trailId) {
   const meta = TRAIL_META[trailId];
   if (!meta) return;
   document.title = `PPT | Trilha ${meta.nome}`;
-  breadcrumbCurrent.textContent = meta.nome;
+  if (breadcrumbCurrent) breadcrumbCurrent.textContent = meta.nome;
   titleElement.textContent = meta.nome;
   descriptionElement.textContent = meta.descricao;
-  trailIndicator.textContent = `${meta.icone} ${meta.nome}`;
+  if (trailIndicator) trailIndicator.textContent = `${meta.icone} ${meta.nome}`;
+}
+
+function setActiveTab(trailId) {
+  trailTabs.forEach((tab) => {
+    const selected = tab.dataset.trailId === trailId;
+    tab.classList.toggle('active', selected);
+    tab.setAttribute('aria-selected', String(selected));
+  });
+}
+
+function destroyCurrentTrail() {
+  if (currentGraph) {
+    currentGraph.destroy();
+    currentGraph = null;
+  }
+  if (currentModal) {
+    currentModal.destroy();
+    currentModal = null;
+  }
+}
+
+function selectTrail(trailId, replaceState = true) {
+  if (!TRAIL_META[trailId]) return;
+  if (trailId === activeTrailId) {
+    if (replaceState) {
+      history.replaceState({}, '', `?id=${encodeURIComponent(trailId)}`);
+    }
+    return;
+  }
+
+  activeTrailId = trailId;
+  setActiveTab(trailId);
+  updatePageMeta(trailId);
+  if (replaceState) {
+    history.replaceState({}, '', `?id=${encodeURIComponent(trailId)}`);
+  }
+
+  destroyCurrentTrail();
+  showLoading();
+
+  loadTrailData(trailId)
+    .then((nodes) => {
+      if (!Array.isArray(nodes) || nodes.length === 0) {
+        throw new Error('Os dados da trilha estão vazios ou inválidos.');
+      }
+
+      currentGraph = new RoadmapGraph(container, nodes);
+      currentModal = new NodeModal(document.body, buildDataMap(nodes));
+    })
+    .catch((error) => {
+      console.error(error);
+      showError('Não foi possível carregar a trilha. Tente novamente mais tarde.');
+    });
 }
 
 function buildDataMap(nodes) {
@@ -77,29 +135,23 @@ function setupLegendToggle() {
 }
 
 function initialize() {
-  const trailId = getTrailId();
-  if (!trailId || !TRAIL_META[trailId]) {
+  const trailId = getTrailId() || 'frontend';
+  if (!TRAIL_META[trailId]) {
     redirectHome();
     return;
   }
 
-  updatePageMeta(trailId);
-  showLoading();
   setupLegendToggle();
-
-  loadTrailData(trailId)
-    .then((nodes) => {
-      if (!Array.isArray(nodes) || nodes.length === 0) {
-        throw new Error('Os dados da trilha estão vazios ou inválidos.');
+  trailTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const selectedTrail = tab.dataset.trailId;
+      if (selectedTrail) {
+        selectTrail(selectedTrail);
       }
-
-      const graph = new RoadmapGraph(container, nodes);
-      new NodeModal(document.body, buildDataMap(nodes));
-    })
-    .catch((error) => {
-      console.error(error);
-      showError('Não foi possível carregar a trilha. Tente novamente mais tarde.');
     });
+  });
+
+  selectTrail(trailId, !getTrailId());
 }
 
 initialize();
