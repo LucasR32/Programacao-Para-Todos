@@ -64,7 +64,7 @@ Nó raiz
 | Backend | Node.js |
 | BD (MVP) | JSON local (arquivos estáticos) |
 | BD (futuro) | PostgreSQL |
-| Mapeamento | Google Maps API (ou alternativa open-source) |
+| Mapeamento | Leaflet + OpenStreetMap |
 | Editor/IDE | VS Code |
 | Versionamento | Git + GitHub |
 | Hospedagem | Vercel |
@@ -103,7 +103,7 @@ Cada nó do grafo contém:
 - [ ] Roadmap visual interativo (grafo SVG ou canvas)
 - [ ] Três trilhas: Frontend, Backend, Banco de Dados
 - [ ] Nós clicáveis com modal de conteúdo (título, descrição, link externo)
-- [ ] Mapa de Wi-Fi gratuito (Google Maps embedado com pontos manuais)
+- [ ] Mapa de Wi-Fi gratuito (Leaflet + OpenStreetMap)
 - [ ] Interface responsiva e leve (prioridade em redes lentas)
 
 ### Futuro

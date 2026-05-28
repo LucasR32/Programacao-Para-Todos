@@ -513,15 +513,15 @@ body {
 
 .trail-tabs {
   display: flex;
+  gap: 8px;
   flex-wrap: wrap;
-  gap: 12px;
   margin-bottom: 20px;
 }
 
 .trail-tab {
-  border: 1px solid rgba(148, 163, 184, 0.22);
+  border: 1px solid var(--color-border);
   background: var(--color-surface);
-  color: var(--color-text);
+  color: var(--color-muted);
   padding: 12px 18px;
   border-radius: 999px;
   font-weight: 700;
@@ -537,7 +537,7 @@ body {
 
 .trail-tab.active,
 .trail-tab[aria-selected="true"] {
-  background: var(--color-primary);
-  color: #ffffff;
+  background: var(--color-accent);
+  color: #0f172a;
   border-color: transparent;
 }

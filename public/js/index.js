@@ -97,39 +97,24 @@ function loadTrails() {
     });
 }
 
-function getMapsApiKey() {
-  const meta = document.querySelector('meta[name="google-maps-api-key"]');
-  return meta?.content?.trim() || '';
-}
-
 function initMap() {
-  const apiKey = getMapsApiKey();
-  if (!apiKey) {
-    mapEmbed.textContent = 'Chave do Google Maps não configurada.';
+  if (!mapEmbed) return;
+  if (!window.L) {
+    mapEmbed.textContent = 'Mapa indisponível.';
     return;
   }
 
-  window.initMap = () => {
-    const map = new google.maps.Map(mapEmbed, {
-      center: { lat: -23.5495, lng: -46.6333 },
-      zoom: 15,
-      disableDefaultUI: true
-    });
+  const center = { lat: -23.5325, lng: -46.7310 };
+  const map = L.map(mapEmbed, { center: [center.lat, center.lng], zoom: 14, zoomControl: true });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+    maxZoom: 19
+  }).addTo(map);
 
-    WIFI_POINTS.forEach((point) => {
-      new google.maps.Marker({
-        position: { lat: point.lat, lng: point.lng },
-        map,
-        title: point.title
-      });
-    });
-  };
-
-  const script = document.createElement('script');
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&callback=initMap`;
-  script.async = true;
-  script.defer = true;
-  document.head.appendChild(script);
+  WIFI_POINTS.forEach((point) => {
+    const marker = L.marker([point.lat, point.lng]).addTo(map);
+    if (point.title) marker.bindPopup(`<strong>${point.title}</strong>`);
+  });
 }
 
 function init() {

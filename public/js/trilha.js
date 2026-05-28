@@ -82,7 +82,7 @@ function selectTrail(trailId, replaceState = true) {
   if (!TRAIL_META[trailId]) return;
   if (trailId === activeTrailId) {
     if (replaceState) {
-      history.replaceState({}, '', `?id=${encodeURIComponent(trailId)}`);
+      history.replaceState(null, '', '?id=' + encodeURIComponent(trailId));
     }
     return;
   }
@@ -91,7 +91,7 @@ function selectTrail(trailId, replaceState = true) {
   setActiveTab(trailId);
   updatePageMeta(trailId);
   if (replaceState) {
-    history.replaceState({}, '', `?id=${encodeURIComponent(trailId)}`);
+    history.replaceState(null, '', '?id=' + encodeURIComponent(trailId));
   }
 
   destroyCurrentTrail();

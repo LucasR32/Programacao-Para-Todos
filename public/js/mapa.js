@@ -12,7 +12,7 @@ function sendError(message) {
 }
 
 function buildRouteUrl(lat, lng) {
-  return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+  return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=18/${lat}/${lng}`;
 }
 
 function highlightListItem(itemId) {

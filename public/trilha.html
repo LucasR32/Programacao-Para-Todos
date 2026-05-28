@@ -14,6 +14,7 @@
   <header class="page-header">
     <div class="header-content">
       <a class="brand" href="index.html">PPT • Programação Para Todos</a>
+      <span class="breadcrumb-home">Início › </span>
       <nav aria-label="Navegação principal" class="main-nav">
         <a href="index.html">Início</a>
         <a href="mapa.html">Mapa Wi-Fi</a>
@@ -36,12 +37,12 @@
     </section>
 
     <div class="page-grid">
+      <div class="trail-tabs" role="tablist" aria-label="Seleção de trilhas">
+        <button type="button" class="trail-tab" data-trail-id="frontend" aria-selected="false">Frontend</button>
+        <button type="button" class="trail-tab" data-trail-id="backend" aria-selected="false">Backend</button>
+        <button type="button" class="trail-tab" data-trail-id="banco-de-dados" aria-selected="false">Banco de Dados</button>
+      </div>
       <section class="roadmap-wrapper">
-        <div class="trail-tabs" role="tablist" aria-label="Seleção de trilhas">
-          <button type="button" class="trail-tab" data-trail-id="frontend" aria-selected="false">Frontend</button>
-          <button type="button" class="trail-tab" data-trail-id="backend" aria-selected="false">Backend</button>
-          <button type="button" class="trail-tab" data-trail-id="banco-de-dados" aria-selected="false">Banco de Dados</button>
-        </div>
         <div id="roadmap-container" class="roadmap-container" aria-live="polite"></div>
       </section>
 
