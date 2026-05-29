@@ -4,40 +4,11 @@ import 'leaflet/dist/leaflet.css';
 import TrailCard from '../components/TrailCard.jsx';
 import '../styles/index.css';
 
-const fallbackCenter = { lat: -23.5325, lng: -46.731 };
-
-function normalizeWifiPoint(point, index) {
-  const lat = Number(point?.lat);
-  const lng = Number(point?.lng);
-
-  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-    return null;
-  }
-
-  return {
-    id: point?.id || `ponto-wifi-${index}`,
-    nome: point?.nome || point?.title || 'Ponto de Wi-Fi',
-    lat,
-    lng,
-  };
-}
-
-async function loadWifiPoints() {
-  const response = await fetch('/api/pontos-wifi', { cache: 'no-store' });
-
-  if (!response.ok) {
-    throw new Error('Não foi possível carregar os pontos de Wi-Fi.');
-  }
-
-  const data = await response.json();
-  const points = Array.isArray(data?.pontos) ? data.pontos.map(normalizeWifiPoint).filter(Boolean) : [];
-
-  if (points.length === 0) {
-    throw new Error('Nenhum ponto de Wi-Fi disponível.');
-  }
-
-  return points;
-}
+const WIFI_POINTS = [
+  { title: 'Escola Estadual Tito Prates da Fonseca', lat: -23.55052, lng: -46.633308 },
+  { title: 'Praça Central', lat: -23.548, lng: -46.634 },
+  { title: 'Biblioteca Comunitária', lat: -23.5495, lng: -46.6325 },
+];
 
 function TrailCardSkeleton() {
   return (
@@ -60,11 +31,8 @@ export default function Home() {
   const [trilhas, setTrilhas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [wifiPoints, setWifiPoints] = useState([]);
-  const [wifiError, setWifiError] = useState(null);
   const mapRef = useRef(null);
   const leafletMapRef = useRef(null);
-  const wifiMarkersRef = useRef([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -136,8 +104,9 @@ export default function Home() {
       return undefined;
     }
 
+    const center = { lat: -23.5325, lng: -46.731 };
     const map = L.map(mapRef.current, {
-      center: [fallbackCenter.lat, fallbackCenter.lng],
+      center: [center.lat, center.lng],
       zoom: 14,
       zoomControl: true,
     });
@@ -147,56 +116,21 @@ export default function Home() {
       maxZoom: 19,
     }).addTo(map);
 
+    WIFI_POINTS.forEach((point) => {
+      const marker = L.marker([point.lat, point.lng]).addTo(map);
+
+      if (point.title) {
+        marker.bindPopup(`<strong>${point.title}</strong>`);
+      }
+    });
+
     leafletMapRef.current = map;
 
     return () => {
-      wifiMarkersRef.current.forEach((marker) => marker.remove());
-      wifiMarkersRef.current = [];
       map.remove();
       leafletMapRef.current = null;
     };
   }, []);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadHomeWifiPoints() {
-      try {
-        setWifiError(null);
-        const points = await loadWifiPoints();
-
-        if (isMounted) {
-          setWifiPoints(points);
-        }
-      } catch (fetchError) {
-        console.error(fetchError);
-
-        if (isMounted) {
-          setWifiPoints([]);
-          setWifiError('Falha ao carregar os pontos de Wi-Fi. Tente novamente mais tarde.');
-        }
-      }
-    }
-
-    loadHomeWifiPoints();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!leafletMapRef.current) {
-      return;
-    }
-
-    wifiMarkersRef.current.forEach((marker) => marker.remove());
-    wifiMarkersRef.current = wifiPoints.map((point) => {
-      const marker = L.marker([point.lat, point.lng]).addTo(leafletMapRef.current);
-      marker.bindPopup(`<strong>${point.nome}</strong>`);
-      return marker;
-    });
-  }, [wifiPoints]);
 
   return (
     <main>
@@ -243,7 +177,7 @@ export default function Home() {
         <div className="container">
           <div className="section-header">
             <p className="eyebrow">Sobre o projeto</p>
-            <h2>Um laboratório de aprendizado para estudantes locais</h2>
+            <h2>Um laboratório de aprendizado tech  para estudantes</h2>
           </div>
           <p>
             O PPT oferece trilhas de programação gratuitas para estudantes da Escola Estadual Tito Prates da Fonseca e
@@ -260,9 +194,6 @@ export default function Home() {
             <h2>Pontos de acesso gratuitos próximos</h2>
           </div>
           <div ref={mapRef} className="map-frame" id="map-embed" aria-label="Mapa de pontos de Wi-Fi gratuito"></div>
-          <div className="fetch-error" hidden={!wifiError}>
-            {wifiError}
-          </div>
           <p className="map-link">
             <a href="/mapa">Ver página dedicada do mapa</a>
           </p>
