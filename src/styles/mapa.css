@@ -1,0 +1,133 @@
+.mapa-page {
+  min-height: calc(100vh - 140px);
+}
+
+.mapa-page .hero {
+  padding: 32px 24px 16px;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.mapa-page .hero h1 {
+  margin: 0 0 12px;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+}
+
+.mapa-page .hero p {
+  margin: 0;
+  color: #475569;
+  max-width: 720px;
+}
+
+.mapa-page .content-grid {
+  display: grid;
+  gap: 24px;
+  padding: 24px;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.mapa-page .map-layout {
+  display: grid;
+  gap: 24px;
+}
+
+.mapa-page .map-panel {
+  min-height: 64vh;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.mapa-page #mapa-container {
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+}
+
+.mapa-page .sidebar {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+}
+
+.mapa-page .sidebar h2 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+}
+
+.mapa-page .ponto-item {
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #f8fafc;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.mapa-page .ponto-item.active {
+  border-color: #2563eb;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.12);
+}
+
+.mapa-page .ponto-item h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.mapa-page .ponto-item p {
+  margin: 4px 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.mapa-page .ponto-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+.mapa-page .btn-route {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
+}
+
+.mapa-page .btn-route:hover {
+  background: #1d4ed8;
+}
+
+.mapa-page .error-text {
+  color: #b91c1c;
+}
+
+@media (min-width: 900px) {
+  .mapa-page .map-layout {
+    grid-template-columns: 1.6fr 0.9fr;
+    align-items: start;
+    min-height: calc(100vh - 240px);
+  }
+
+  .mapa-page .map-panel {
+    min-height: calc(100vh - 240px);
+  }
+}
+
+@media (max-width: 899px) {
+  .mapa-page .map-panel {
+    min-height: 56vh;
+  }
+}

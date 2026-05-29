@@ -6,12 +6,13 @@ import { fileURLToPath } from 'url';
 import trilhasHandler from './trilhas.js';
 import trilhaHandler from './trilha.js';
 import noHandler from './no.js';
+import pontosWifiHandler from './pontos-wifi.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 3000;
-const PUBLIC_FOLDER = path.join(process.cwd(), 'public');
+const STATIC_FOLDER = path.join(process.cwd(), 'dist');
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -35,10 +36,23 @@ function sendNotFound(res) {
   res.end('Not Found');
 }
 
+function sendFile(res, filePath) {
+  const stream = fs.createReadStream(filePath);
+  res.statusCode = 200;
+  res.setHeader('Content-Type', getContentType(filePath));
+  res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN || '*');
+  stream.pipe(res);
+}
+
+function isInsideStaticFolder(filePath) {
+  const relativePath = path.relative(STATIC_FOLDER, filePath);
+  return relativePath && !relativePath.startsWith('..') && !path.isAbsolute(relativePath);
+}
+
 function serveStatic(req, res, pathname) {
   // Prevent directory traversal
   const safePath = path.normalize(pathname).replace(/^\.+/, '');
-  const filePath = path.join(PUBLIC_FOLDER, safePath);
+  const filePath = path.join(STATIC_FOLDER, safePath);
 
   // If the path is a directory, try index.html inside it
   let finalPath = filePath;
@@ -49,17 +63,20 @@ function serveStatic(req, res, pathname) {
     // file/directory doesn't exist — continue to try to serve as-is
   }
 
-  if (!finalPath.startsWith(PUBLIC_FOLDER)) {
+  if (!isInsideStaticFolder(finalPath)) {
     return sendNotFound(res);
   }
 
   fs.stat(finalPath, (err, stats) => {
-    if (err || !stats.isFile()) return sendNotFound(res);
-    const stream = fs.createReadStream(finalPath);
-    res.statusCode = 200;
-    res.setHeader('Content-Type', getContentType(finalPath));
-    res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN || '*');
-    stream.pipe(res);
+    if (!err && stats.isFile()) {
+      return sendFile(res, finalPath);
+    }
+
+    const fallbackPath = path.join(STATIC_FOLDER, 'index.html');
+    fs.stat(fallbackPath, (fallbackErr, fallbackStats) => {
+      if (fallbackErr || !fallbackStats.isFile()) return sendNotFound(res);
+      return sendFile(res, fallbackPath);
+    });
   });
 }
 
@@ -80,7 +97,7 @@ const server = http.createServer((req, res) => {
     const pathname = urlObj.pathname;
 
     if (!pathname.startsWith('/api')) {
-      // serve static files from public/
+      // serve static files from the Vite production build
       // remove leading slash
       const relPath = pathname.replace(/^\//, '') || 'index.html';
       return serveStatic(req, res, relPath);
@@ -93,6 +110,7 @@ const server = http.createServer((req, res) => {
     if (pathname === '/api/trilhas') return trilhasHandler(req, res);
     if (pathname === '/api/trilha') return trilhaHandler(req, res);
     if (pathname === '/api/no') return noHandler(req, res);
+    if (pathname === '/api/pontos-wifi') return pontosWifiHandler(req, res);
 
     // Unknown API route
     res.statusCode = 404;
